@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
@@ -320,6 +321,9 @@ public abstract class UaNode implements UaServerNode {
         VariableNode node = getPropertyNode(property.getBrowseName()).orElseGet(() -> {
             String browseName = property.getBrowseName();
 
+            UShort namespaceIndex = context.getNamespaceManager()
+                .getNamespaceTable().getIndex(property.getNamespaceUri());
+
             NodeId propertyNodeId = new NodeId(
                 getNodeId().getNamespaceIndex(),
                 String.format("%s.%s", getNodeId().getIdentifier().toString(), browseName)
@@ -328,7 +332,7 @@ public abstract class UaNode implements UaServerNode {
             UaPropertyNode propertyNode = new UaPropertyNode(
                 context,
                 propertyNodeId,
-                new QualifiedName(getNodeId().getNamespaceIndex(), browseName),
+                new QualifiedName(namespaceIndex, browseName),
                 LocalizedText.english(browseName)
             );
 
@@ -404,6 +408,22 @@ public abstract class UaNode implements UaServerNode {
             getNodeClass(),
             false
         ));
+    }
+
+    /**
+     * Find a {@link UaNode} with the specified {@code browseName} referenced by this node.
+     *
+     * @param browseName the Browse Name of the target node.
+     * @param references a {@link Predicate} used to include/exclude references to follow.
+     * @return the target node, if one was found.
+     */
+    public Optional<UaNode> findNode(QualifiedName browseName, Predicate<Reference> references) {
+        return getNodeManager().getReferences(nodeId)
+            .stream()
+            .filter(references)
+            .flatMap(r -> opt2stream(getNode(r.getTargetNodeId())))
+            .filter(n -> n.getBrowseName().equals(browseName))
+            .findFirst();
     }
 
     protected Optional<ObjectNode> getObjectComponent(String namespaceUri, String name) {
