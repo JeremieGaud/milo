@@ -13,24 +13,38 @@
 
 package org.eclipse.milo.opcua.sdk.client;
 
+
 import org.eclipse.milo.opcua.sdk.client.api.UaSession;
+import org.eclipse.milo.opcua.sdk.client.session.events.SessionFailureEvent;
+
 
 public interface SessionActivityListener {
 
     /**
      * An activated {@link UaSession} is now available.
      * <p>
-     * Holding a reference to this session is not necessary or advised;
-     * it is provided merely for informational purposes.
+     * Holding a reference to this session is not necessary or advised; it is provided merely for informational
+     * purposes.
      */
-    default void onSessionActive(UaSession session) {}
+    default void onSessionActive(UaSession session) {
+    }
 
     /**
      * The previously activated {@link UaSession} is no longer available.
      * <p>
-     * Holding a reference to this session is not necessary or advised;
-     * it is provided merely for informational purposes.
+     * Holding a reference to this session is not necessary or advised; it is provided merely for informational
+     * purposes.
      */
-    default void onSessionInactive(UaSession session) {}
+    default void onSessionInactive(UaSession session) {
+    }
+
+    /**
+     * The current {@link UaSession} encounters failure.
+     * <p>
+     * Holding a reference to this session is not necessary or advised; it is provided merely for informational
+     * purposes.
+     */
+    default void onSessionFailure(SessionFailureEvent event) {
+    }
 
 }

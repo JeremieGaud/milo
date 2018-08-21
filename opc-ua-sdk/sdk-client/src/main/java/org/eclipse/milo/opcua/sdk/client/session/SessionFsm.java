@@ -28,6 +28,7 @@ import org.eclipse.milo.opcua.sdk.client.session.events.CloseSessionEvent;
 import org.eclipse.milo.opcua.sdk.client.session.events.CreateSessionEvent;
 import org.eclipse.milo.opcua.sdk.client.session.events.Event;
 import org.eclipse.milo.opcua.sdk.client.session.events.ServiceFaultEvent;
+import org.eclipse.milo.opcua.sdk.client.session.events.SessionFailureEvent;
 import org.eclipse.milo.opcua.sdk.client.session.states.Active;
 import org.eclipse.milo.opcua.sdk.client.session.states.Inactive;
 import org.eclipse.milo.opcua.sdk.client.session.states.SessionState;
@@ -161,6 +162,10 @@ public class SessionFsm {
                     event.getClass().getSimpleName(),
                     nextState.getClass().getSimpleName()
                 );
+                
+                if (event instanceof SessionFailureEvent) {
+                    this.notifySessionFailure((SessionFailureEvent) event);
+                }
 
                 if (prevState.getClass() == nextState.getClass()) {
                     nextState.onInternalTransition(fsm, event);
@@ -192,6 +197,22 @@ public class SessionFsm {
             listeners.forEach(listener -> {
                 try {
                     listener.onSessionActive(session);
+                } catch (Throwable t) {
+                    logger.warn("Uncaught Throwable notifying listener: {}", listener, t);
+                }
+            });
+        });
+    }
+
+    private void notifySessionFailure(SessionFailureEvent event) {
+        logger.debug("notifySessionFailure()");
+
+        notificationQueue.submit(() -> {
+            logger.debug("notifying {} listeners...", listeners.size());
+
+            this.listeners.forEach(listener -> {
+                try {
+                    listener.onSessionFailure(event);
                 } catch (Throwable t) {
                     logger.warn("Uncaught Throwable notifying listener: {}", listener, t);
                 }

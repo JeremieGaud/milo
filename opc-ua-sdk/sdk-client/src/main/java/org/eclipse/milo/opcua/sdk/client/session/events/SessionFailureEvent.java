@@ -19,10 +19,22 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.milo.opcua.sdk.client.OpcUaSession;
 
 
-public class ActivateSessionFailureEvent extends SessionFailureEvent {
+public abstract class SessionFailureEvent implements Event {
 
-    public ActivateSessionFailureEvent(Throwable failure, CompletableFuture<OpcUaSession> sessionFuture) {
-        super(failure, sessionFuture);
+    private final Throwable                       failure;
+    private final CompletableFuture<OpcUaSession> sessionFuture;
+
+    public SessionFailureEvent(Throwable failure, CompletableFuture<OpcUaSession> sessionFuture) {
+        this.failure = failure;
+        this.sessionFuture = sessionFuture;
+    }
+
+    public Throwable getFailure() {
+        return this.failure;
+    }
+
+    public CompletableFuture<OpcUaSession> getSessionFuture() {
+        return this.sessionFuture;
     }
 
 }

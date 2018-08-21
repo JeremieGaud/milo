@@ -13,26 +13,16 @@
 
 package org.eclipse.milo.opcua.sdk.client.session.events;
 
+
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.milo.opcua.sdk.client.OpcUaSession;
 
-public class CreateSessionFailureEvent implements Event {
 
-    private final Throwable failure;
-    private final CompletableFuture<OpcUaSession> sessionFuture;
+public class CreateSessionFailureEvent extends SessionFailureEvent {
 
     public CreateSessionFailureEvent(Throwable failure, CompletableFuture<OpcUaSession> sessionFuture) {
-        this.failure = failure;
-        this.sessionFuture = sessionFuture;
-    }
-
-    public Throwable getFailure() {
-        return failure;
-    }
-
-    public CompletableFuture<OpcUaSession> getSessionFuture() {
-        return sessionFuture;
+        super(failure, sessionFuture);
     }
 
 }
