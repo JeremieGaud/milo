@@ -12,7 +12,7 @@
     <url>https://github.com/eclipse/milo</url>
 
     <scm>
-        <url>https://github.com/eclipse/milo</url>
+        <url>https://github.com/JeremieGaud/milo.git</url>
         <connection>scm:git:git://github.com/eclipse/milo.git</connection>
         <developerConnection>scm:git:git@github.com:eclipse/milo.git</developerConnection>
         <tag>0.2.2-VIF</tag>
