@@ -14,7 +14,7 @@
 
     <scm>
         <url>https://github.com/JeremieGaud/milo</url>
-        <connection>scm:git:git://github.com/JeremieGaud/milo.git</connection>
+        <connection>https://github.com/JeremieGaud/milo</connection>
         <developerConnection>scm:git:git@github.com:JeremieGaud/milo.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
